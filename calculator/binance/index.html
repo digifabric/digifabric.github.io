@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<title>Binance Cross Margin Account Liquidation Calculator</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+
+
+<h1>Binance Cross Margin Account Liquidation Calculator</h1>
+
+<h2>Input:</h2>
+
+<h3>Binance Setup:</h3>
+<form>
+    <label>Account Equity:<input id="account_equity" type="number" value="0" min="0" /></label>
+    <label>Borrowed (Dept):<input id="account_dept" type="number" value="0" min="0" /></label>
+    <label>Interest:<input id="account_interest" type="number" value="0" min="0" /></label>
+    <label>Price Deviation:<input id="price_deviation" type="number" value="0" min="0" max="100" /></label>
+</form>
+
+<h3>3Commas Bot Setup:</h3>
+
+<form>
+    <label>Base order size:<input id="base_order_volume" type="number" /></label>
+    <label>Safety order size:<input id="safety_order_volume" type="number" /></label>
+
+    <label>Max safety trades count:<input id="max_safety_orders" type="number" /></label>
+    <label>Safety order step percentage:<input id="safety_order_step_percentage" type="number" /></label>
+    <label>Martingale volume coefficient:<input id="martingale_volume_coefficient" type="number" /></label>
+    <label>Martingale step coefficient:<input id="martingale_step_coefficient" type="number" /></label>
+
+
+</form>
+
+
+<h2>Output:</h2>
+
+
+<table>
+    <caption>
+        <h3>Bot Info</h3>
+    </caption>
+    <tbody>
+        <tr>
+            <th scope="row">Max. amount for bot usage:</th>
+            <td></td>
+        </tr>
+        <tr>
+            <th scope="row">Margin Level:</th>
+            <td><output id="margin_level"></output></td>
+        </tr>
+        <tr>
+            <th scope="row">Liquidation Level:</th>
+            <td><output id="liquidation_level"></output></td>
+        </tr>
+    </tbody>
+</table>
+
+
+<table>
+    <caption>
+        <h3>Base Order & Safety Orders</h3>
+    </caption>
+    <thead>
+        <tr>
+            <th>Order #</th>
+            <th>Price Dev.</th>
+            <th>Avg. Price</th>
+            <th>Order Size (Margin)</th>
+            <th>Liq. Price (%)</th>
+            <th>PnL</th>
+            <th>Margin Ratio</th>
+            <th>Total QTY</th>
+            <th>Total Volume</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Godzilla</td>
+            <td>2</td>
+            <td>$299.99</td>
+        </tr>
+        <tr>
+            <td>Mozilla</td>
+            <td>10</td>
+            <td>$100,000.00</td>
+        </tr>
+        <tr>
+            <td>Quesadilla</td>
+            <td>1</td>
+            <td>$2.22</td>
+        </tr>
+    </tbody>
+</table>
+
+<footer>
+    © 2021
+</footer>
+
+<script>
+
+    document.getElementById("account_equity").addEventListener('input', update);
+    document.getElementById("account_dept").addEventListener('input', update);
+    document.getElementById("account_interest").addEventListener('input', update);
+    document.getElementById("price_deviation").addEventListener('input', update);
+
+    function update(e) {
+        let equity = Number.parseFloat(document.getElementById("account_equity").value);
+        let dept = Number.parseFloat(document.getElementById("account_dept").value);
+        let interest = Number.parseFloat(document.getElementById("account_interest").value);
+        let deviation = Number.parseFloat(document.getElementById("price_deviation").value);
+
+
+
+        let margin_level = ((dept + interest) == 0) ? 999 : ((equity + dept) / (dept + interest))
+        let liquidation_level = Math.abs(0.1 * dept - equity) / equity;
+
+        // Output
+        document.getElementById('margin_level').textContent = margin_level;
+        document.getElementById('liquidation_level').textContent = liquidation_level;
+
+    }
+
+    void function init() {
+        update()
+    }.call(globalThis)
+</script>
+
